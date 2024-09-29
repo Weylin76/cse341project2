@@ -1,4 +1,4 @@
-### Test POST dancer
+### Test POST (Create) dancer
 POST http://localhost:3000/dancers
 Content-Type: application/json
 
@@ -7,3 +7,26 @@ Content-Type: application/json
     "lastName": "Douglas",
     "age": 17
 }
+
+### Test POST (Create) dance class
+POST http://localhost:3000/danceclasses
+Content-Type: application/json
+
+{
+    "name": "Intermediate Ballet",
+    "semester": "Fall 2024",
+    "teacher": "John Smith",
+    "teachingAssistant": "Emily Brown",
+    "lengthOfClass": 90,
+    "typeOfClass": "Ballet",
+    "location": "Studio A, Downtown Dance Academy",
+    "daysOfWeek": ["Monday", "Wednesday", "Friday"],
+    "dancers": [
+        {
+            "firstName": "Ethan",
+            "lastName": "Douglas",
+            "age": 17
+        }
+    ]
+}
+

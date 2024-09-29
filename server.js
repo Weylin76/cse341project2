@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -34,9 +33,11 @@ app.get('/', (req, res) => {
 const dancerRoutes = require('./routes/dancerRoutes');
 app.use('/dancers', dancerRoutes);
 
+// Dance class routes
+const danceClassRoutes = require('./routes/danceClassRoutes');
+app.use('/danceclasses', danceClassRoutes);
+
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
-
-
