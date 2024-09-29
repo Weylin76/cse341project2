@@ -1,0 +1,9 @@
+### Test POST dancer
+POST http://localhost:3000/dancers
+Content-Type: application/json
+
+{
+    "firstName": "Ethan",
+    "lastName": "Douglas",
+    "age": 17
+}
