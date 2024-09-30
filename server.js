@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const config = require('./config/db.config');
-console.log(config);  // This will print the config object
+console.log(config);
 
 // Initialize Express
 const app = express();
