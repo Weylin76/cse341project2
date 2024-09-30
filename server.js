@@ -1,10 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 const cors = require('cors');
-
-// Load environment variables
-dotenv.config();
+const config = require('./config/db.config');
+console.log(config);  // This will print the config object
 
 // Initialize Express
 const app = express();
@@ -17,27 +15,23 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(config.url, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB connected successfully'))
     .catch((err) => {
         console.error('Error connecting to MongoDB:', err.message);
         process.exit(1);
     });
 
-// Home route
-app.get('/', (req, res) => {
-    res.send('Welcome to Dance Academy!');
-});
-
-// Dancer routes
+// Import routes
 const dancerRoutes = require('./routes/dancerRoutes');
-app.use('/dancers', dancerRoutes);
-
-// Dance class routes
 const danceClassRoutes = require('./routes/danceClassRoutes');
+
+// Use routes
+app.use('/dancers', dancerRoutes);
 app.use('/danceclasses', danceClassRoutes);
 
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+

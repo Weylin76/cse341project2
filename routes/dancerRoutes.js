@@ -1,4 +1,3 @@
-// routes/dancerRoutes.js
 const express = require('express');
 const router = express.Router();
 const dancerController = require('../controllers/dancerController');
@@ -19,3 +18,4 @@ router.put('/:id', dancerController.updateDancer);
 router.delete('/:id', dancerController.deleteDancer);
 
 module.exports = router;
+
