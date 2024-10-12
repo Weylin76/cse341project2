@@ -47,7 +47,7 @@ router.get('/:id', danceClassController.getDanceClassById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         application/json:  # Correctly formatted
  *           schema:
  *             type: object
  *             properties:
@@ -115,7 +115,7 @@ router.post('/', validateDanceClass, danceClassController.createDanceClass);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json
+ *         application/json:  # Correctly formatted
  *           schema:
  *             type: object
  *             properties:

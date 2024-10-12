@@ -32,8 +32,9 @@ app.use('/danceclasses', danceClassRoutes);
 
 // Start the server
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-    console.log(`Swagger API Docs available at http://localhost:${port}/api-doc`);
+    const baseUrl = process.env.NODE_ENV === 'production' ? 'https://your-render-app-url.onrender.com' : `http://localhost:${port}`;
+    console.log(`Server is running on ${baseUrl}`);
+    console.log(`Swagger API Docs available at ${baseUrl}/api-doc`);
 });
 
 
