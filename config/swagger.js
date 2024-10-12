@@ -1,8 +1,7 @@
 const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
-
+const swaggerUi = require('swagger-ui-express'); // Add this line
 const port = process.env.PORT || 8080;
-const host = process.env.NODE_ENV === 'production' ? 'https://your-render-app-url.onrender.com' : `http://localhost:${port}`;
+const host = process.env.NODE_ENV === 'production' ? 'https://cse341project2-s13i.onrender.com' : `http://localhost:${port}`;
 
 const swaggerOptions = {
     swaggerDefinition: {
@@ -65,5 +64,7 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
-module.exports = { swaggerUi, swaggerDocs };
+module.exports = { swaggerUi, swaggerDocs }; // Ensure swaggerUi is defined correctly
+
+
 
