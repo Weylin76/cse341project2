@@ -11,12 +11,19 @@ const swaggerOptions = {
             contact: {
                 name: 'Weylin Douglas',
             },
-            servers: ['http://localhost:8080'],
         },
+        servers: [
+            {
+                url: 'http://localhost:8080',
+                description: 'Local server',
+            },
+        ],
     },
-    apis: ['./routes/*.js'], // Adjust the path as needed
+    // By removing detailed schemas, we focus more on the endpoints rather than the specific object structure.
+    apis: ['./routes/*.js'], // Adjust the path to match your project structure
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 module.exports = { swaggerUi, swaggerDocs };
+

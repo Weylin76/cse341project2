@@ -1,18 +1,18 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const { swaggerUi: swaggerSetup, swaggerDocs } = require('./config/swagger');
+const dancerRoutes = require('./routes/dancerRoutes');
+const danceClassRoutes = require('./routes/danceClassRoutes');
 const config = require('./config/db.config');
-const { swaggerUi, swaggerDocs } = require('./config/swagger');
-
 
 // Initialize Express
 const app = express();
 const port = process.env.PORT || 8080;
 
-// Enable CORS for all routes
+// Middleware setup
 app.use(cors());
-
-// Middleware to parse incoming JSON requests
 app.use(express.json());
 
 // MongoDB connection
@@ -23,14 +23,10 @@ mongoose.connect(config.url, { useNewUrlParser: true, useUnifiedTopology: true }
         process.exit(1);
     });
 
-// Swagger API Docs
+// Swagger API Documentation
 app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// Import routes
-const dancerRoutes = require('./routes/dancerRoutes');
-const danceClassRoutes = require('./routes/danceClassRoutes');
-
-// Use routes
+// Register routes for dancers and dance classes
 app.use('/dancers', dancerRoutes);
 app.use('/danceclasses', danceClassRoutes);
 
@@ -39,5 +35,6 @@ app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
     console.log(`Swagger API Docs available at http://localhost:${port}/api-doc`);
 });
+
 
 

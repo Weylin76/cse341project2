@@ -1,10 +1,12 @@
-const DanceClass = require('../models/danceClass'); // Make sure the model is correctly imported
+// controllers/danceClassController.js
+
+const DanceClass = require('../models/danceClass');
 
 // Controller to get all dance classes
 exports.getAllDanceClasses = async (req, res) => {
     try {
-        const classes = await DanceClass.find();
-        res.status(200).json(classes);
+        const danceClasses = await DanceClass.find();
+        res.status(200).json(danceClasses);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -27,8 +29,8 @@ exports.getDanceClassById = async (req, res) => {
 exports.createDanceClass = async (req, res) => {
     try {
         const newDanceClass = new DanceClass(req.body);
-        const savedClass = await newDanceClass.save();
-        res.status(201).json(savedClass);
+        const savedDanceClass = await newDanceClass.save();
+        res.status(201).json(savedDanceClass);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -37,11 +39,11 @@ exports.createDanceClass = async (req, res) => {
 // Controller to update a dance class by ID
 exports.updateDanceClass = async (req, res) => {
     try {
-        const updatedClass = await DanceClass.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!updatedClass) {
+        const updatedDanceClass = await DanceClass.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedDanceClass) {
             return res.status(404).json({ message: 'Dance class not found' });
         }
-        res.status(200).json(updatedClass);
+        res.status(200).json(updatedDanceClass);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -50,8 +52,8 @@ exports.updateDanceClass = async (req, res) => {
 // Controller to delete a dance class by ID
 exports.deleteDanceClass = async (req, res) => {
     try {
-        const deletedClass = await DanceClass.findByIdAndDelete(req.params.id);
-        if (!deletedClass) {
+        const deletedDanceClass = await DanceClass.findByIdAndDelete(req.params.id);
+        if (!deletedDanceClass) {
             return res.status(404).json({ message: 'Dance class not found' });
         }
         res.status(200).json({ message: 'Dance class deleted successfully' });
