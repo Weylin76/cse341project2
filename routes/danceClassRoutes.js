@@ -4,7 +4,7 @@ const danceClassController = require('../controllers/danceClassController');
 const { validateDanceClass } = require('../middlewares/validators'); // Correctly import validation middleware for dance classes
 
 // GET all dance classes
-/**
+/** ChatGPT helps with swagger file
  * @swagger
  * /danceclasses:
  *   get:
