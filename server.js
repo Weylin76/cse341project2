@@ -2,7 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const config = require('./config/db.config');
-console.log(config);
+const { swaggerUi, swaggerDocs } = require('./config/swagger');
+
 
 // Initialize Express
 const app = express();
@@ -22,6 +23,9 @@ mongoose.connect(config.url, { useNewUrlParser: true, useUnifiedTopology: true }
         process.exit(1);
     });
 
+// Swagger API Docs
+app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 // Import routes
 const dancerRoutes = require('./routes/dancerRoutes');
 const danceClassRoutes = require('./routes/danceClassRoutes');
@@ -33,5 +37,7 @@ app.use('/danceclasses', danceClassRoutes);
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Swagger API Docs available at http://localhost:${port}/api-doc`);
 });
+
 
