@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const dancerController = require('../controllers/dancerController');
+const { validateDancer } = require('../middlewares/validators');
+
+
+
 
 // GET all dancers
 /**
@@ -47,7 +51,7 @@ router.get('/', dancerController.getAllDancers);
  */
 router.get('/:id', dancerController.getDancerById);
 
-// POST a new dancer
+// POST a new dancer with validation
 /**
  * @swagger
  * /dancers:
@@ -73,10 +77,12 @@ router.get('/:id', dancerController.getDancerById);
  *     responses:
  *       201:
  *         description: Dancer created successfully
+ *       400:
+ *         description: Invalid data format
  */
-router.post('/', dancerController.createDancer);
+router.post('/', validateDancer, dancerController.createDancer);
 
-// PUT to update a dancer by ID
+// PUT to update a dancer by ID with validation
 /**
  * @swagger
  * /dancers/{id}:
@@ -109,10 +115,12 @@ router.post('/', dancerController.createDancer);
  *     responses:
  *       200:
  *         description: Dancer updated successfully
+ *       400:
+ *         description: Invalid data format
  *       404:
  *         description: Dancer not found
  */
-router.put('/:id', dancerController.updateDancer);
+router.put('/:id', validateDancer, dancerController.updateDancer);
 
 // DELETE a dancer by ID
 /**

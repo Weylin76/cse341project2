@@ -1,5 +1,4 @@
 // controllers/danceClassController.js
-
 const DanceClass = require('../models/danceClass');
 
 // Controller to get all dance classes
@@ -8,7 +7,7 @@ exports.getAllDanceClasses = async (req, res) => {
         const danceClasses = await DanceClass.find();
         res.status(200).json(danceClasses);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: 'An error occurred while fetching dance classes.' });
     }
 };
 
@@ -21,7 +20,7 @@ exports.getDanceClassById = async (req, res) => {
         }
         res.status(200).json(danceClass);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: 'An error occurred while retrieving the dance class.' });
     }
 };
 
@@ -32,20 +31,20 @@ exports.createDanceClass = async (req, res) => {
         const savedDanceClass = await newDanceClass.save();
         res.status(201).json(savedDanceClass);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: 'An error occurred while creating the dance class.' });
     }
 };
 
 // Controller to update a dance class by ID
 exports.updateDanceClass = async (req, res) => {
     try {
-        const updatedDanceClass = await DanceClass.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedDanceClass = await DanceClass.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         if (!updatedDanceClass) {
             return res.status(404).json({ message: 'Dance class not found' });
         }
         res.status(200).json(updatedDanceClass);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: 'An error occurred while updating the dance class.' });
     }
 };
 
@@ -58,7 +57,7 @@ exports.deleteDanceClass = async (req, res) => {
         }
         res.status(200).json({ message: 'Dance class deleted successfully' });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: 'An error occurred while deleting the dance class.' });
     }
 };
 

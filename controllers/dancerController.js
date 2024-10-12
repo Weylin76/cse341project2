@@ -7,7 +7,7 @@ exports.getAllDancers = async (req, res) => {
         const dancers = await Dancer.find();
         res.status(200).json(dancers);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: 'An error occurred while fetching dancers.' });
     }
 };
 
@@ -20,7 +20,7 @@ exports.getDancerById = async (req, res) => {
         }
         res.status(200).json(dancer);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: 'An error occurred while retrieving the dancer.' });
     }
 };
 
@@ -31,20 +31,20 @@ exports.createDancer = async (req, res) => {
         const savedDancer = await newDancer.save();
         res.status(201).json(savedDancer);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: 'An error occurred while creating the dancer.' });
     }
 };
 
 // Controller to update a dancer by ID
 exports.updateDancer = async (req, res) => {
     try {
-        const updatedDancer = await Dancer.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedDancer = await Dancer.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         if (!updatedDancer) {
             return res.status(404).json({ message: 'Dancer not found' });
         }
         res.status(200).json(updatedDancer);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: 'An error occurred while updating the dancer.' });
     }
 };
 
@@ -57,6 +57,7 @@ exports.deleteDancer = async (req, res) => {
         }
         res.status(200).json({ message: 'Dancer deleted successfully' });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: 'An error occurred while deleting the dancer.' });
     }
 };
+

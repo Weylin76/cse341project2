@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const danceClassController = require('../controllers/danceClassController');
+const { validateDanceClass } = require('../middlewares/validators'); // Correctly import validation middleware for dance classes
 
 // GET all dance classes
 /**
@@ -36,7 +37,7 @@ router.get('/', danceClassController.getAllDanceClasses);
  */
 router.get('/:id', danceClassController.getDanceClassById);
 
-// POST (create) a new dance class
+// POST (create) a new dance class with validation
 /**
  * @swagger
  * /danceclasses:
@@ -93,10 +94,12 @@ router.get('/:id', danceClassController.getDanceClassById);
  *     responses:
  *       201:
  *         description: Dance class created
+ *       400:
+ *         description: Invalid data format
  */
-router.post('/', danceClassController.createDanceClass);
+router.post('/', validateDanceClass, danceClassController.createDanceClass);
 
-// PUT to update a dance class by ID
+// PUT to update a dance class by ID with validation
 /**
  * @swagger
  * /danceclasses/{id}:
@@ -112,7 +115,7 @@ router.post('/', danceClassController.createDanceClass);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         application/json
  *           schema:
  *             type: object
  *             properties:
@@ -159,10 +162,12 @@ router.post('/', danceClassController.createDanceClass);
  *     responses:
  *       200:
  *         description: Dance class updated
+ *       400:
+ *         description: Invalid data format
  *       404:
  *         description: Dance class not found
  */
-router.put('/:id', danceClassController.updateDanceClass);
+router.put('/:id', validateDanceClass, danceClassController.updateDanceClass);
 
 // DELETE a dance class by ID
 /**
