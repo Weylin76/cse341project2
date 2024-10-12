@@ -48,7 +48,48 @@ router.get('/:id', danceClassController.getDanceClassById);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/DanceClass'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Intro to Ballet"
+ *               semester:
+ *                 type: string
+ *                 example: "Fall 2024"
+ *               teacher:
+ *                 type: string
+ *                 example: "Krista Smith"
+ *               teachingAssistant:
+ *                 type: string
+ *                 example: "Lori Brown"
+ *               classLength:
+ *                 type: integer
+ *                 example: 90
+ *               classType:
+ *                 type: string
+ *                 example: "Ballet"
+ *               location:
+ *                 type: string
+ *                 example: "Studio A, Downtown Dance Academy"
+ *               daysOfWeek:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ["Monday", "Wednesday", "Friday"]
+ *               dancers:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     firstName:
+ *                       type: string
+ *                       example: "Cocoa"
+ *                     lastName:
+ *                       type: string
+ *                       example: "Douglas"
+ *                     age:
+ *                       type: integer
+ *                       example: 10
  *     responses:
  *       201:
  *         description: Dance class created
@@ -73,7 +114,48 @@ router.post('/', danceClassController.createDanceClass);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/DanceClass'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Advanced Ballet"
+ *               semester:
+ *                 type: string
+ *                 example: "Spring 2025"
+ *               teacher:
+ *                 type: string
+ *                 example: "Sarah Lee"
+ *               teachingAssistant:
+ *                 type: string
+ *                 example: "Alex Brown"
+ *               classLength:
+ *                 type: integer
+ *                 example: 120
+ *               classType:
+ *                 type: string
+ *                 example: "Contemporary"
+ *               location:
+ *                 type: string
+ *                 example: "Studio B, Uptown Dance Academy"
+ *               daysOfWeek:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ["Tuesday", "Thursday"]
+ *               dancers:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     firstName:
+ *                       type: string
+ *                       example: "Ethan"
+ *                     lastName:
+ *                       type: string
+ *                       example: "Douglas"
+ *                     age:
+ *                       type: integer
+ *                       example: 17
  *     responses:
  *       200:
  *         description: Dance class updated
@@ -104,4 +186,3 @@ router.put('/:id', danceClassController.updateDanceClass);
 router.delete('/:id', danceClassController.deleteDanceClass);
 
 module.exports = router;
-

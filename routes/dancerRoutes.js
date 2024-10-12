@@ -59,7 +59,17 @@ router.get('/:id', dancerController.getDancerById);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Dancer'
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *                 example: "Katelyn"
+ *               lastName:
+ *                 type: string
+ *                 example: "Douglas"
+ *               age:
+ *                 type: integer
+ *                 example: 17
  *     responses:
  *       201:
  *         description: Dancer created successfully
@@ -85,7 +95,17 @@ router.post('/', dancerController.createDancer);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Dancer'
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *                 example: "Kate"
+ *               lastName:
+ *                 type: string
+ *                 example: "Douglas"
+ *               age:
+ *                 type: integer
+ *                 example: 18
  *     responses:
  *       200:
  *         description: Dancer updated successfully
