@@ -42,7 +42,7 @@ exports.updateDanceClass = async (req, res) => {
         if (!updatedDanceClass) {
             return res.status(404).json({ message: 'Dance class not found' });
         }
-        res.status(200).json(updatedDanceClass);
+        res.status(204).json(updatedDanceClass);
     } catch (err) {
         res.status(500).json({ error: 'An error occurred while updating the dance class.' });
     }

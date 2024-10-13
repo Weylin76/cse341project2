@@ -42,7 +42,7 @@ exports.updateDancer = async (req, res) => {
         if (!updatedDancer) {
             return res.status(404).json({ message: 'Dancer not found' });
         }
-        res.status(200).json(updatedDancer);
+        res.status(204).json(updatedDancer);
     } catch (err) {
         res.status(500).json({ error: 'An error occurred while updating the dancer.' });
     }
