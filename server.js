@@ -44,7 +44,7 @@ app.use(passport.session());
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID, // from .env file
     clientSecret: process.env.GOOGLE_CLIENT_SECRET, // from .env file
-    callbackURL: "http://localhost:8080/auth/google/callback" // Use your redirect URI here
+    callbackURL: process.env.GOOGLE_CALLBACK_URL // Use your redirect URI here from .env
 }, (accessToken, refreshToken, profile, done) => {
     // Here, you can choose to save the user profile to your database
     // For now, we simply return the profile object
@@ -66,6 +66,7 @@ app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'em
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }),
     (req, res) => {
         // Successful authentication, redirect to dashboard or any other page
+        console.log('User profile:', req.user); // Debugging purpose
         res.redirect('/dashboard');
     }
 );
@@ -104,7 +105,5 @@ app.listen(port, () => {
     console.log(`Server is running on ${baseUrl}`);
     console.log(`Swagger API Docs available at ${baseUrl}/api-doc`);
 });
-
-//Week05 working correctly ready for video
 
 
