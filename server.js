@@ -12,14 +12,21 @@ const { isLoggedIn } = require('./middlewares/authMiddleware');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
-require('dotenv').config();
+const MongoStore = require('connect-mongo');  // Store sessions in MongoDB
+require('dotenv').config();  // Ensure you use environment variables for sensitive data
 
 // Initialize Express
 const app = express();
 const port = process.env.PORT || 8080;
 
-// Middleware setup
-app.use(cors());
+// CORS Middleware - Update based on the environment
+const corsOptions = {
+    origin: process.env.NODE_ENV === 'production' ? 'https://cse341project2-s13i.onrender.com' : 'http://localhost:8080',
+    credentials: true  // Allow credentials (cookies, headers)
+};
+app.use(cors(corsOptions));
+
+// Parse incoming requests with JSON payloads
 app.use(express.json());
 
 // MongoDB connection
@@ -31,10 +38,18 @@ mongoose.connect(config.url, { useNewUrlParser: true, useUnifiedTopology: true }
     });
 
 // Session middleware (required for Passport)
+// Store sessions in MongoDB for production and local environments
 app.use(session({
-    secret: 'your-secret-key',
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
     saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // Cookies will only be sent over HTTPS in production
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Required for cross-site cookies
+    },
+    store: MongoStore.create({
+        mongoUrl: config.url,  // Use the same MongoDB connection for session storage
+    })
 }));
 
 // Passport.js middleware
@@ -43,14 +58,16 @@ app.use(passport.session());
 
 // Google OAuth strategy
 passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID, // from .env file
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET, // from .env file
-    callbackURL: process.env.GOOGLE_CALLBACK_URL // Use your redirect URI here from .env
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.NODE_ENV === 'production'
+        ? process.env.GOOGLE_CALLBACK_URL_PRODUCTION
+        : process.env.GOOGLE_CALLBACK_URL_LOCAL  // Use the correct callback based on the environment
 }, (accessToken, refreshToken, profile, done) => {
     return done(null, profile);
 }));
 
-// Serialize and deserialize user
+// Serialize and deserialize user (for maintaining login sessions)
 passport.serializeUser((user, done) => {
     done(null, user);
 });
@@ -64,19 +81,20 @@ app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'em
 
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }),
     (req, res) => {
+        // Successful authentication, redirect to dashboard
         res.redirect('/dashboard');
     }
 );
 
 // Route to log out
-app.get('/logout', (req, res) => {
+app.get('/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) return next(err);
         res.redirect('/');
     });
 });
 
-// Protected route example
+// Protected route example (only accessible if logged in)
 app.get('/dashboard', isLoggedIn, (req, res) => {
     res.send(`Hello, ${req.user.displayName}`);
 });
