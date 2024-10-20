@@ -13,6 +13,9 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
 require('dotenv').config(); // Ensure you use environment variables for sensitive data
 
+// Import the custom authentication middleware
+const { isLoggedIn } = require('./middleware/authMiddleware');
+
 // Initialize Express
 const app = express();
 const port = process.env.PORT || 8080;
@@ -84,14 +87,6 @@ app.get('/dashboard', isLoggedIn, (req, res) => {
     res.send(`Hello, ${req.user.displayName}`);
 });
 
-// Middleware to check if user is authenticated
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect('/');
-}
-
 // Swagger API Documentation
 app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
@@ -105,5 +100,6 @@ app.listen(port, () => {
     console.log(`Server is running on ${baseUrl}`);
     console.log(`Swagger API Docs available at ${baseUrl}/api-doc`);
 });
+
 
 
