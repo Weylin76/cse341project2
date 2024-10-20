@@ -6,15 +6,13 @@ const { swaggerUi: swaggerSetup, swaggerDocs } = require('./config/swagger');
 const dancerRoutes = require('./routes/dancerRoutes');
 const danceClassRoutes = require('./routes/danceClassRoutes');
 const config = require('./config/db.config');
+const { isLoggedIn } = require('./middlewares/authMiddleware');
 
 // Additional packages for OAuth
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
-require('dotenv').config(); // Ensure you use environment variables for sensitive data
-
-// Import the custom authentication middleware
-const { isLoggedIn } = require('./middleware/authMiddleware');
+require('dotenv').config();
 
 // Initialize Express
 const app = express();
@@ -49,12 +47,10 @@ passport.use(new GoogleStrategy({
     clientSecret: process.env.GOOGLE_CLIENT_SECRET, // from .env file
     callbackURL: process.env.GOOGLE_CALLBACK_URL // Use your redirect URI here from .env
 }, (accessToken, refreshToken, profile, done) => {
-    // Here, you can choose to save the user profile to your database
-    // For now, we simply return the profile object
     return done(null, profile);
 }));
 
-// Serialize and deserialize user (required for Passport sessions)
+// Serialize and deserialize user
 passport.serializeUser((user, done) => {
     done(null, user);
 });
@@ -68,8 +64,6 @@ app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'em
 
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }),
     (req, res) => {
-        // Successful authentication, redirect to dashboard or any other page
-        console.log('User profile:', req.user); // Debugging purpose
         res.redirect('/dashboard');
     }
 );
@@ -100,6 +94,3 @@ app.listen(port, () => {
     console.log(`Server is running on ${baseUrl}`);
     console.log(`Swagger API Docs available at ${baseUrl}/api-doc`);
 });
-
-
-
