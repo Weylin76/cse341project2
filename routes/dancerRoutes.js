@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const dancerController = require('../controllers/dancerController');
+const dancerController = require('../controllers/dancerController'); 
 const { validateDancer } = require('../middlewares/validators');
-const { isLoggedIn } = require('../middlewares/authMiddleware');
+const { isLoggedIn } = require('../middlewares/authMiddleware');     
 
 // GET all dancers
 /**
@@ -21,7 +21,7 @@ const { isLoggedIn } = require('../middlewares/authMiddleware');
  *               items:
  *                 $ref: '#/components/schemas/Dancer'
  */
-router.get('/', isLoggedIn, dancerController.getAllDancers);
+router.get('/', isLoggedIn, dancerController.getAllDancers); 
 
 // GET a dancer by ID
 /**
@@ -47,8 +47,7 @@ router.get('/', isLoggedIn, dancerController.getAllDancers);
  *       404:
  *         description: Dancer not found
  */
-router.get('/:id', isLoggedIn, dancerController.getDancerById);
-
+router.get('/:id', isLoggedIn, dancerController.getDancerById); 
 // POST a new dancer with validation
 /**
  * @swagger
@@ -78,7 +77,7 @@ router.get('/:id', isLoggedIn, dancerController.getDancerById);
  *       400:
  *         description: Invalid data format
  */
-router.post('/', isLoggedIn,  validateDancer, dancerController.createDancer);
+router.post('/', isLoggedIn, validateDancer, dancerController.createDancer);  
 
 // PUT to update a dancer by ID with validation
 /**
@@ -118,7 +117,7 @@ router.post('/', isLoggedIn,  validateDancer, dancerController.createDancer);
  *       404:
  *         description: Dancer not found
  */
-router.put('/:id', isLoggedIn, validateDancer, dancerController.updateDancer);
+router.put('/:id', isLoggedIn, validateDancer, dancerController.updateDancer); 
 
 // DELETE a dancer by ID
 /**
@@ -140,6 +139,6 @@ router.put('/:id', isLoggedIn, validateDancer, dancerController.updateDancer);
  *       404:
  *         description: Dancer not found
  */
-router.delete('/:id', isLoggedIn,  dancerController.deleteDancer);
+router.delete('/:id', isLoggedIn, dancerController.deleteDancer); 
 
 module.exports = router;
