@@ -67,18 +67,21 @@ passport.use(new GoogleStrategy({
         ? process.env.GOOGLE_CALLBACK_URL_PRODUCTION  // For production
         : process.env.GOOGLE_CALLBACK_URL_LOCAL       // For local development
 }, (accessToken, refreshToken, profile, done) => {
-    console.log('Google OAuth callback reached, user authenticated:', profile.displayName);
+    console.log('Google OAuth callback reached:');
+    console.log('Access Token:', accessToken);
+    console.log('Refresh Token:', refreshToken);
+    console.log('User Profile:', profile);
     return done(null, profile);
 }));
 
 // Serialize and deserialize user (for maintaining login sessions)
 passport.serializeUser((user, done) => {
-    console.log('Serializing user:', user.displayName);
+    console.log('Serializing user:', user.displayName || user.email || 'Unknown User');
     done(null, user);
 });
 
 passport.deserializeUser((obj, done) => {
-    console.log('Deserializing user:', obj.displayName);
+    console.log('Deserializing user:', obj.displayName || 'Unknown User');
     done(null, obj);
 });
 
@@ -91,7 +94,7 @@ app.get('/auth/google', (req, res, next) => {
 app.get('/auth/google/callback', (req, res, next) => {
     console.log('Google OAuth callback route hit');
     next();
-}, passport.authenticate('google', { failureRedirect: '/' }),
+}, passport.authenticate('google', { failureRedirect: '/failure' }),
     (req, res) => {
         console.log('OAuth callback successful, redirecting to dashboard');
         res.redirect('/dashboard');
@@ -101,17 +104,26 @@ app.get('/auth/google/callback', (req, res, next) => {
 // Route to log out
 app.get('/logout', (req, res, next) => {
     req.logout((err) => {
-        if (err) return next(err);
-        console.log('User logged out');
+        if (err) {
+            console.error('Error during logout:', err);
+            return next(err);
+        }
+        console.log('User logged out successfully');
         res.redirect('/');
     });
+});
+
+// Route for failed authentication
+app.get('/failure', (req, res) => {
+    console.log('OAuth login failed');
+    res.send('Failed to authenticate.');
 });
 
 // Protected route example (only accessible if logged in)
 app.get('/dashboard', isLoggedIn, (req, res) => {
     if (req.user) {
-        console.log(`User authenticated, accessing dashboard: ${req.user.displayName}`);
-        res.send(`Hello, ${req.user.displayName}`);
+        console.log(`User authenticated, accessing dashboard: ${req.user.displayName || 'Unknown User'}`);
+        res.send(`Hello, ${req.user.displayName || 'User'}`);
     } else {
         console.log('Unauthorized access to dashboard');
         res.redirect('/');
