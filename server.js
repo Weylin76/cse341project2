@@ -62,7 +62,7 @@ passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: process.env.NODE_ENV === 'production'
-        ? process.env.GOOGLE_CALLBACK_URL_PRODUCTION  // For production, set this in Render environment variables
+        ? process.env.GOOGLE_CALLBACK_URL_PRODUCTION  // For production
         : process.env.GOOGLE_CALLBACK_URL_LOCAL       // For local development
 }, (accessToken, refreshToken, profile, done) => {
     return done(null, profile);
