@@ -12,7 +12,7 @@ const { isLoggedIn } = require('./middlewares/authMiddleware');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
-const MongoStore = require('connect-mongo');  
+const MongoStore = require('connect-mongo');
 require('dotenv').config(); 
 
 // Initialize Express
@@ -20,7 +20,6 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 // CORS Middleware - Update based on the environment
-//ChatGPT help otimize code
 const corsOptions = {
     origin: process.env.NODE_ENV === 'production' ? 'https://cse341project2-s13i.onrender.com' : 'http://localhost:8080',
     credentials: true  // Allow credentials (cookies, headers)
@@ -39,14 +38,13 @@ mongoose.connect(config.url, { useNewUrlParser: true, useUnifiedTopology: true }
     });
 
 // Session middleware (required for Passport)
-// Store sessions in MongoDB for production and local environments
 app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // Cookies will only be sent over HTTPS in production
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Required for cross-site cookies ChatGPT Helped solve
+        secure: process.env.NODE_ENV === 'production', // Cookies only sent over HTTPS in production
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Required for cross-site cookies
     },
     store: MongoStore.create({
         mongoUrl: config.url,  // Use the same MongoDB connection for session storage
@@ -106,6 +104,22 @@ app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // Register routes for dancers and dance classes
 app.use('/dancers', dancerRoutes);
 app.use('/danceclasses', danceClassRoutes);
+
+// Add root route for home page
+app.get('/', (req, res) => {
+    res.send('Welcome to the CSE341 Project 2 Home Page');
+});
+
+// Error handling for undefined routes
+app.use((req, res) => {
+    res.status(404).send('Sorry, that route does not exist');
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
 
 // Start the server
 app.listen(port, () => {
