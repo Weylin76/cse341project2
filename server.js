@@ -12,14 +12,15 @@ const { isLoggedIn } = require('./middlewares/authMiddleware');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
-const MongoStore = require('connect-mongo');  // Store sessions in MongoDB
-require('dotenv').config();  // Ensure you use environment variables for sensitive data
+const MongoStore = require('connect-mongo');  
+require('dotenv').config(); 
 
 // Initialize Express
 const app = express();
 const port = process.env.PORT || 8080;
 
 // CORS Middleware - Update based on the environment
+//ChatGPT help otimize code
 const corsOptions = {
     origin: process.env.NODE_ENV === 'production' ? 'https://cse341project2-s13i.onrender.com' : 'http://localhost:8080',
     credentials: true  // Allow credentials (cookies, headers)
@@ -45,7 +46,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         secure: process.env.NODE_ENV === 'production', // Cookies will only be sent over HTTPS in production
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Required for cross-site cookies
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Required for cross-site cookies ChatGPT Helped solve
     },
     store: MongoStore.create({
         mongoUrl: config.url,  // Use the same MongoDB connection for session storage
@@ -61,8 +62,8 @@ passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: process.env.NODE_ENV === 'production'
-        ? process.env.GOOGLE_CALLBACK_URL_PRODUCTION
-        : process.env.GOOGLE_CALLBACK_URL_LOCAL  // Use the correct callback based on the environment
+        ? process.env.GOOGLE_CALLBACK_URL_PRODUCTION  // For production, set this in Render environment variables
+        : process.env.GOOGLE_CALLBACK_URL_LOCAL       // For local development
 }, (accessToken, refreshToken, profile, done) => {
     return done(null, profile);
 }));
