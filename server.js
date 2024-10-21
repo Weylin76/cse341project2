@@ -19,17 +19,17 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 8080;
 
-// CORS Middleware - Update based on the environment
+// 1. CORS Middleware - Update based on the environment
 const corsOptions = {
     origin: process.env.NODE_ENV === 'production' ? 'https://cse341project2-s13i.onrender.com' : 'http://localhost:8080',
     credentials: true  // Allow credentials (cookies, headers)
 };
 app.use(cors(corsOptions));
 
-// Parse incoming requests with JSON payloads
+// 2. Parse incoming requests with JSON payloads
 app.use(express.json());
 
-// MongoDB connection
+// 3. MongoDB connection
 mongoose.connect(config.url, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log('MongoDB connected successfully');
@@ -39,7 +39,7 @@ mongoose.connect(config.url, { useNewUrlParser: true, useUnifiedTopology: true }
         process.exit(1);
     });
 
-// Session middleware (required for Passport)
+// 4. Session middleware (required for Passport)
 app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
@@ -53,13 +53,13 @@ app.use(session({
     })
 }));
 
-// Passport.js middleware
+// 5. Passport.js middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
 console.log('Passport middleware initialized');
 
-// Google OAuth strategy
+// 6. Google OAuth strategy
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -74,7 +74,7 @@ passport.use(new GoogleStrategy({
     return done(null, profile);
 }));
 
-// Serialize and deserialize user (for maintaining login sessions)
+// 7. Serialize and deserialize user (for maintaining login sessions)
 passport.serializeUser((user, done) => {
     console.log('Serializing user:', user.displayName || user.email || 'Unknown User');
     done(null, user);
@@ -85,7 +85,7 @@ passport.deserializeUser((obj, done) => {
     done(null, obj);
 });
 
-// Routes for Google OAuth
+// 8. Routes for Google OAuth
 app.get('/auth/google', (req, res, next) => {
     console.log('Attempting Google OAuth login...');
     next();
@@ -101,7 +101,7 @@ app.get('/auth/google/callback', (req, res, next) => {
     }
 );
 
-// Route to log out
+// 9. Route to log out
 app.get('/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) {
@@ -113,13 +113,13 @@ app.get('/logout', (req, res, next) => {
     });
 });
 
-// Route for failed authentication
+// 10. Route for failed authentication
 app.get('/failure', (req, res) => {
     console.log('OAuth login failed');
     res.send('Failed to authenticate.');
 });
 
-// Protected route example (only accessible if logged in)
+// 11. Protected route example (only accessible if logged in)
 app.get('/dashboard', isLoggedIn, (req, res) => {
     if (req.user) {
         console.log(`User authenticated, accessing dashboard: ${req.user.displayName || 'Unknown User'}`);
@@ -130,32 +130,32 @@ app.get('/dashboard', isLoggedIn, (req, res) => {
     }
 });
 
-// Swagger API Documentation
+// 12. Swagger API Documentation
 app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// Register routes for dancers and dance classes
+// 13. Register routes for dancers and dance classes
 app.use('/dancers', dancerRoutes);
 app.use('/danceclasses', danceClassRoutes);
 
-// Add root route for home page
+// 14. Add root route for home page
 app.get('/', (req, res) => {
     console.log('Home page accessed');
     res.send('Welcome to the CSE341 Project 2 Home Page');
 });
 
-// Error handling for undefined routes
+// 15. Error handling for undefined routes
 app.use((req, res) => {
     console.log(`Undefined route accessed: ${req.originalUrl}`);
     res.status(404).send('Sorry, that route does not exist');
 });
 
-// Error handling middleware
+// 16. Error handling middleware
 app.use((err, req, res, next) => {
     console.error('Internal server error:', err.stack);
     res.status(500).send('Something broke!');
 });
 
-// Start the server
+// 17. Start the server
 app.listen(port, () => {
     const baseUrl = process.env.NODE_ENV === 'production' ? 'https://cse341project2-s13i.onrender.com' : `http://localhost:${port}`;
     console.log(`Server is running on ${baseUrl}`);
