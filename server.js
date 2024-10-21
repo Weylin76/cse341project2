@@ -13,7 +13,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-require('dotenv').config(); 
+require('dotenv').config();
 
 // Initialize Express
 const app = express();
@@ -83,9 +83,15 @@ passport.deserializeUser((obj, done) => {
 });
 
 // Routes for Google OAuth
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+app.get('/auth/google', (req, res, next) => {
+    console.log('Attempting Google OAuth login...');
+    next();
+}, passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }),
+app.get('/auth/google/callback', (req, res, next) => {
+    console.log('Google OAuth callback route hit');
+    next();
+}, passport.authenticate('google', { failureRedirect: '/' }),
     (req, res) => {
         console.log('OAuth callback successful, redirecting to dashboard');
         res.redirect('/dashboard');
