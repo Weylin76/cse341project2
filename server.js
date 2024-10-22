@@ -45,8 +45,9 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // Cookies only sent over HTTPS in production
+        secure: process.env.NODE_ENV === 'production', // Only set cookies over HTTPS in production
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Required for cross-site cookies
+        maxAge: 24 * 60 * 60 * 1000  // Session cookie valid for 1 day
     },
     store: MongoStore.create({
         mongoUrl: config.url,  // Use the same MongoDB connection for session storage
@@ -85,7 +86,14 @@ passport.deserializeUser((obj, done) => {
     done(null, obj);
 });
 
-// 8. Routes for Google OAuth
+// 8. Debugging middleware for session and user information
+app.use((req, res, next) => {
+    console.log('Session:', req.session);
+    console.log('User:', req.user);
+    next();
+});
+
+// 9. Routes for Google OAuth
 app.get('/auth/google', (req, res, next) => {
     console.log('Attempting Google OAuth login...');
     next();
@@ -97,11 +105,16 @@ app.get('/auth/google/callback', (req, res, next) => {
 }, passport.authenticate('google', { failureRedirect: '/failure' }),
     (req, res) => {
         console.log('OAuth callback successful, redirecting to dashboard');
-        res.redirect('/dashboard');
+        req.session.save((err) => {
+            if (err) {
+                console.error('Error saving session:', err);
+            }
+            res.redirect('/dashboard');
+        });
     }
 );
 
-// 9. Route to log out
+// 10. Route to log out
 app.get('/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) {
@@ -113,13 +126,13 @@ app.get('/logout', (req, res, next) => {
     });
 });
 
-// 10. Route for failed authentication
+// 11. Route for failed authentication
 app.get('/failure', (req, res) => {
     console.log('OAuth login failed');
     res.send('Failed to authenticate.');
 });
 
-// 11. Protected route example (only accessible if logged in)
+// 12. Protected route example (only accessible if logged in)
 app.get('/dashboard', isLoggedIn, (req, res) => {
     if (req.user) {
         console.log(`User authenticated, accessing dashboard: ${req.user.displayName || 'Unknown User'}`);
@@ -130,32 +143,32 @@ app.get('/dashboard', isLoggedIn, (req, res) => {
     }
 });
 
-// 12. Swagger API Documentation
+// 13. Swagger API Documentation
 app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// 13. Register routes for dancers and dance classes
+// 14. Register routes for dancers and dance classes
 app.use('/dancers', dancerRoutes);
 app.use('/danceclasses', danceClassRoutes);
 
-// 14. Add root route for home page
+// 15. Add root route for home page
 app.get('/', (req, res) => {
     console.log('Home page accessed');
     res.send('Welcome to the CSE341 Project 2 Home Page');
 });
 
-// 15. Error handling for undefined routes
+// 16. Error handling for undefined routes
 app.use((req, res) => {
     console.log(`Undefined route accessed: ${req.originalUrl}`);
     res.status(404).send('Sorry, that route does not exist');
 });
 
-// 16. Error handling middleware
+// 17. Error handling middleware
 app.use((err, req, res, next) => {
     console.error('Internal server error:', err.stack);
     res.status(500).send('Something broke!');
 });
 
-// 17. Start the server
+// 18. Start the server
 app.listen(port, () => {
     const baseUrl = process.env.NODE_ENV === 'production' ? 'https://cse341project2-s13i.onrender.com' : `http://localhost:${port}`;
     console.log(`Server is running on ${baseUrl}`);
