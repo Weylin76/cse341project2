@@ -1,4 +1,5 @@
-// Example isLoggedIn middleware for more debug
+// authMiddleware.js
+
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         console.log('User is authenticated:', req.user);
@@ -8,3 +9,5 @@ function isLoggedIn(req, res, next) {
         res.redirect('/');
     }
 }
+
+module.exports = { isLoggedIn };

@@ -4,6 +4,9 @@ const dancerController = require('../controllers/dancerController');
 const { validateDancer } = require('../middlewares/validators');
 const { isLoggedIn } = require('../middlewares/authMiddleware');     
 
+// Ensure all controller methods are correctly loaded
+console.log('Loaded dancerController:', dancerController);
+
 // GET all dancers
 /**
  * @swagger
@@ -21,7 +24,14 @@ const { isLoggedIn } = require('../middlewares/authMiddleware');
  *               items:
  *                 $ref: '#/components/schemas/Dancer'
  */
-router.get('/', isLoggedIn, dancerController.getAllDancers); 
+router.get('/', isLoggedIn, (req, res, next) => {
+    console.log('GET /dancers');
+    if (!dancerController.getAllDancers) {
+        console.error('Error: getAllDancers method is undefined.');
+        return res.status(500).send('Internal Server Error. Method not found.');
+    }
+    dancerController.getAllDancers(req, res, next);
+});
 
 // GET a dancer by ID
 /**
@@ -47,7 +57,15 @@ router.get('/', isLoggedIn, dancerController.getAllDancers);
  *       404:
  *         description: Dancer not found
  */
-router.get('/:id', isLoggedIn, dancerController.getDancerById); 
+router.get('/:id', isLoggedIn, (req, res, next) => {
+    console.log('GET /dancers/:id');
+    if (!dancerController.getDancerById) {
+        console.error('Error: getDancerById method is undefined.');
+        return res.status(500).send('Internal Server Error. Method not found.');
+    }
+    dancerController.getDancerById(req, res, next);
+});
+
 // POST a new dancer with validation
 /**
  * @swagger
@@ -77,7 +95,14 @@ router.get('/:id', isLoggedIn, dancerController.getDancerById);
  *       400:
  *         description: Invalid data format
  */
-router.post('/', isLoggedIn, validateDancer, dancerController.createDancer);  
+router.post('/', isLoggedIn, validateDancer, (req, res, next) => {
+    console.log('POST /dancers');
+    if (!dancerController.createDancer) {
+        console.error('Error: createDancer method is undefined.');
+        return res.status(500).send('Internal Server Error. Method not found.');
+    }
+    dancerController.createDancer(req, res, next);
+});
 
 // PUT to update a dancer by ID with validation
 /**
@@ -117,7 +142,14 @@ router.post('/', isLoggedIn, validateDancer, dancerController.createDancer);
  *       404:
  *         description: Dancer not found
  */
-router.put('/:id', isLoggedIn, validateDancer, dancerController.updateDancer); 
+router.put('/:id', isLoggedIn, validateDancer, (req, res, next) => {
+    console.log('PUT /dancers/:id');
+    if (!dancerController.updateDancer) {
+        console.error('Error: updateDancer method is undefined.');
+        return res.status(500).send('Internal Server Error. Method not found.');
+    }
+    dancerController.updateDancer(req, res, next);
+});
 
 // DELETE a dancer by ID
 /**
@@ -139,6 +171,13 @@ router.put('/:id', isLoggedIn, validateDancer, dancerController.updateDancer);
  *       404:
  *         description: Dancer not found
  */
-router.delete('/:id', isLoggedIn, dancerController.deleteDancer); 
+router.delete('/:id', isLoggedIn, (req, res, next) => {
+    console.log('DELETE /dancers/:id');
+    if (!dancerController.deleteDancer) {
+        console.error('Error: deleteDancer method is undefined.');
+        return res.status(500).send('Internal Server Error. Method not found.');
+    }
+    dancerController.deleteDancer(req, res, next);
+});
 
 module.exports = router;
