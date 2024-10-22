@@ -72,18 +72,20 @@ passport.use(new GoogleStrategy({
     console.log('Access Token:', accessToken);
     console.log('Refresh Token:', refreshToken);
     console.log('User Profile:', profile);
+    
+    // Pass the user profile to the done callback to store in session
     return done(null, profile);
 }));
 
 // 7. Serialize and deserialize user (for maintaining login sessions)
 passport.serializeUser((user, done) => {
     console.log('Serializing user:', user.displayName || user.email || 'Unknown User');
-    done(null, user);
+    done(null, user);  // The entire user profile is being serialized to the session
 });
 
-passport.deserializeUser((obj, done) => {
-    console.log('Deserializing user:', obj.displayName || 'Unknown User');
-    done(null, obj);
+passport.deserializeUser((user, done) => {
+    console.log('Deserializing user:', user.displayName || 'Unknown User');
+    done(null, user);  // Retrieving the user profile from the session
 });
 
 // 8. Debugging middleware for session and user information
@@ -94,15 +96,9 @@ app.use((req, res, next) => {
 });
 
 // 9. Routes for Google OAuth
-app.get('/auth/google', (req, res, next) => {
-    console.log('Attempting Google OAuth login...');
-    next();
-}, passport.authenticate('google', { scope: ['profile', 'email'] }));
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-app.get('/auth/google/callback', (req, res, next) => {
-    console.log('Google OAuth callback route hit');
-    next();
-}, passport.authenticate('google', { failureRedirect: '/failure' }),
+app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/failure' }),
     (req, res) => {
         console.log('OAuth callback successful, redirecting to dashboard');
         req.session.save((err) => {
