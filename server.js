@@ -70,9 +70,8 @@ passport.use(new GoogleStrategy({
 }, (accessToken, refreshToken, profile, done) => {
     console.log('Google OAuth callback reached:');
     console.log('Access Token:', accessToken);
-    console.log('Refresh Token:', refreshToken);
     console.log('User Profile:', profile);
-    
+
     // Pass the user profile to the done callback to store in session
     return done(null, profile);
 }));
@@ -80,12 +79,12 @@ passport.use(new GoogleStrategy({
 // 7. Serialize and deserialize user (for maintaining login sessions)
 passport.serializeUser((user, done) => {
     console.log('Serializing user:', user.displayName || user.email || 'Unknown User');
-    done(null, user);  // The entire user profile is being serialized to the session
+    done(null, user);  // Serialize the entire user profile into the session
 });
 
 passport.deserializeUser((user, done) => {
     console.log('Deserializing user:', user.displayName || 'Unknown User');
-    done(null, user);  // Retrieving the user profile from the session
+    done(null, user);  // Retrieve the user profile from the session
 });
 
 // 8. Debugging middleware for session and user information
