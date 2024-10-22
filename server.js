@@ -96,11 +96,21 @@ app.use((req, res, next) => {
 });
 
 // 9. Routes for Google OAuth
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+app.get('/auth/google', (req, res, next) => {
+    console.log('Attempting Google OAuth login...');
+    console.log('OAuth Request URL:', req.originalUrl); // log request URL
+    console.log('OAuth Scope:', ['profile', 'email']);  // log scope
+    next();
+}, passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/failure' }),
+app.get('/auth/google/callback', (req, res, next) => {
+    console.log('Google OAuth callback route hit');
+    console.log('Callback Request URL:', req.originalUrl); // log the full callback URL
+    next();
+}, passport.authenticate('google', { failureRedirect: '/failure' }),
     (req, res) => {
         console.log('OAuth callback successful, redirecting to dashboard');
+        console.log('Authenticated User:', req.user); // log authenticated user details
         req.session.save((err) => {
             if (err) {
                 console.error('Error saving session:', err);
