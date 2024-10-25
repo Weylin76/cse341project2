@@ -4,6 +4,16 @@ const danceClassController = require('../controllers/danceClassController');
 const { validateDanceClass } = require('../middlewares/validators');
 const { isLoggedIn } = require('../middlewares/authMiddleware');
 
+// Function to conditionally apply middleware
+const conditionalAuth = (req, res, next) => {
+    if (process.env.NODE_ENV !== 'production') {
+        // In the local environment, enforce authentication
+        return isLoggedIn(req, res, next);
+    }
+    // In production, skip authentication
+    return next();
+};
+
 // GET all dance classes
 /** ChatGPT helps with swagger file
  * @swagger
@@ -15,7 +25,7 @@ const { isLoggedIn } = require('../middlewares/authMiddleware');
  *       200:
  *         description: List of dance classes
  */
-router.get('/', isLoggedIn,  danceClassController.getAllDanceClasses);
+router.get('/', conditionalAuth,  danceClassController.getAllDanceClasses);
 
 // GET a dance class by ID
 /**
@@ -36,7 +46,7 @@ router.get('/', isLoggedIn,  danceClassController.getAllDanceClasses);
  *       404:
  *         description: Dance class not found
  */
-router.get('/:id', isLoggedIn,  danceClassController.getDanceClassById);
+router.get('/:id', conditionalAuth,  danceClassController.getDanceClassById);
 
 // POST (create) a new dance class with validation
 /**
@@ -98,7 +108,7 @@ router.get('/:id', isLoggedIn,  danceClassController.getDanceClassById);
  *       400:
  *         description: Invalid data format
  */
-router.post('/', isLoggedIn,  validateDanceClass, danceClassController.createDanceClass);
+router.post('/', conditionalAuth,  validateDanceClass, danceClassController.createDanceClass);
 
 // PUT to update a dance class by ID with validation
 /**
@@ -168,7 +178,7 @@ router.post('/', isLoggedIn,  validateDanceClass, danceClassController.createDan
  *       404:
  *         description: Dance class not found
  */
-router.put('/:id', isLoggedIn,  validateDanceClass, danceClassController.updateDanceClass);
+router.put('/:id', conditionalAuth,  validateDanceClass, danceClassController.updateDanceClass);
 
 // DELETE a dance class by ID
 /**
@@ -189,6 +199,6 @@ router.put('/:id', isLoggedIn,  validateDanceClass, danceClassController.updateD
  *       404:
  *         description: Dance class not found
  */
-router.delete('/:id', isLoggedIn,  danceClassController.deleteDanceClass);
+router.delete('/:id', conditionalAuth,  danceClassController.deleteDanceClass);
 
 module.exports = router;
