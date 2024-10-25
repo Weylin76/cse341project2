@@ -68,8 +68,8 @@ const validateDanceClass = [
 ];
 
 module.exports = {
-    validateDancer,  // Export validation for dancers
-    validateDanceClass,  // Export validation for dance classes
+    validateDancer,
+    validateDanceClass,
 };
 
 

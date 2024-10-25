@@ -13,5 +13,5 @@ const outputFile = './swagger-output.json';
 const endpointsFiles = ['./routes/dancerRoutes.js', './routes/danceClassRoutes.js'];
 
 swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
-    require('./server.js'); // Your project's entry point
+    require('./server.js');
 });

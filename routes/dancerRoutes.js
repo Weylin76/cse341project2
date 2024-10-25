@@ -15,6 +15,7 @@ const conditionalAuth = (req, res, next) => {
 };
 
 // GET all dancers
+//Chat GPT helped with swagger code
 /**
  * @swagger
  * /dancers:

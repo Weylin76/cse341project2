@@ -1,4 +1,3 @@
-// models/dancer.js
 const mongoose = require('mongoose');
 
 // Define the schema for a dancer
