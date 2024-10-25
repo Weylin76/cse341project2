@@ -2,7 +2,17 @@ const express = require('express');
 const router = express.Router();
 const dancerController = require('../controllers/dancerController'); 
 const { validateDancer } = require('../middlewares/validators');
-const { isLoggedIn } = require('../middlewares/authMiddleware');     
+const { isLoggedIn } = require('../middlewares/authMiddleware');   
+
+// Function to conditionally apply middleware
+const conditionalAuth = (req, res, next) => {
+    if (process.env.NODE_ENV !== 'production') {
+        // In the local environment, enforce authentication
+        return isLoggedIn(req, res, next);
+    }
+    // In production, skip authentication
+    return next();
+};
 
 // GET all dancers
 /**
@@ -21,7 +31,7 @@ const { isLoggedIn } = require('../middlewares/authMiddleware');
  *               items:
  *                 $ref: '#/components/schemas/Dancer'
  */
-router.get('/', (req, res, next) => {
+router.get('/', conditionalAuth, (req, res, next) => {
     dancerController.getAllDancers(req, res, next);
 });
 
@@ -48,7 +58,7 @@ router.get('/', (req, res, next) => {
  *       404:
  *         description: Dancer not found
  */
-router.get('/:id', (req, res, next) => {
+router.get('/:id', conditionalAuth, (req, res, next) => {
     dancerController.getDancerById(req, res, next);
 });
 
@@ -71,7 +81,7 @@ router.get('/:id', (req, res, next) => {
  *       400:
  *         description: Invalid data format
  */
-router.post('/', validateDancer, (req, res, next) => {
+router.post('/', conditionalAuth, validateDancer, (req, res, next) => {
     dancerController.createDancer(req, res, next);
 });
 
@@ -102,7 +112,7 @@ router.post('/', validateDancer, (req, res, next) => {
  *       404:
  *         description: Dancer not found
  */
-router.put('/:id', validateDancer, (req, res, next) => {
+router.put('/:id', conditionalAuth, validateDancer, (req, res, next) => {
     dancerController.updateDancer(req, res, next);
 });
 
@@ -125,7 +135,7 @@ router.put('/:id', validateDancer, (req, res, next) => {
  *       404:
  *         description: Dancer not found
  */
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', conditionalAuth, (req, res, next) => {
     dancerController.deleteDancer(req, res, next);
 });
 
