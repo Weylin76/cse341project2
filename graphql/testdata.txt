@@ -1,0 +1,146 @@
+# Example Queries and Mutations
+
+## Fetch All Dancers
+query GetAllDancers {
+  dancers {
+    id
+    firstName
+    lastName
+    age
+  }
+}
+
+## Fetch a Single Dancer by ID
+query GetDancer {
+  dancer(id: "66f9ae387772bc08d8431232") {
+    id
+    firstName
+    lastName
+    age
+  }
+}
+
+## Fetch All Dance Classes
+query GetAllDanceClasses {
+  danceClasses {
+    id
+    name
+    semester
+    teacher
+    classLength
+    classType
+    location
+    daysOfWeek
+    dancers {
+      firstName
+      lastName
+    }
+  }
+}
+
+## Fetch a Single Dance Class by ID
+query GetDanceClass {
+  danceClass(id: "670d9109da4b6e8d083e2254") {
+    id
+    name
+    semester
+    teacher
+    classType
+    location
+    dancers {
+      firstName
+      lastName
+    }
+  }
+}
+
+---
+
+# Example Mutations
+
+## Add a New Dancer
+mutation AddDancer {
+  addDancer(dancer: {
+    firstName: "John",
+    lastName: "Doe",
+    age: 20
+  }) {
+    id
+    firstName
+    lastName
+    age
+  }
+}
+
+## Update an Existing Dancer
+mutation UpdateDancer {
+  updateDancer(id: "66f9ae387772bc08d8431232", dancer: {
+    firstName: "Jane",
+    lastName: "Doe",
+    age: 21
+  }) {
+    id
+    firstName
+    lastName
+    age
+  }
+}
+
+## Delete a Dancer
+mutation DeleteDancer {
+  deleteDancer(id: "66f9ae387772bc08d8431232")
+}
+
+---
+
+## Add a New Dance Class
+mutation AddDanceClass {
+  addDanceClass(danceClass: {
+    name: "Advanced Jazz",
+    semester: "Fall 2024",
+    teacher: "Ms. Smith",
+    classLength: 90,
+    classType: "Jazz",
+    location: "Studio B",
+    daysOfWeek: ["Tuesday", "Thursday"],
+    dancers: [{ firstName: "John", lastName: "Doe", age: 20 }]
+  }) {
+    id
+    name
+    semester
+    teacher
+    classType
+    location
+    daysOfWeek
+    dancers {
+      firstName
+      lastName
+    }
+  }
+}
+
+## Update an Existing Dance Class
+mutation UpdateDanceClass {
+  updateDanceClass(id: "670d9109da4b6e8d083e2254", danceClass: {
+    name: "Beginner Ballet",
+    semester: "Winter 2025",
+    teacher: "Ms. Taylor",
+    classLength: 60,
+    classType: "Ballet",
+    location: "Studio C",
+    daysOfWeek: ["Monday", "Wednesday"]
+  }) {
+    id
+    name
+    semester
+    teacher
+    classType
+    location
+    daysOfWeek
+  }
+}
+
+## Delete a Dance Class
+mutation DeleteDanceClass {
+  deleteDanceClass(id: "670d9109da4b6e8d083e2254")
+}
