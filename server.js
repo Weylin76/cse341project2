@@ -29,7 +29,8 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect(config.url, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(config.url)
+    .then(() => console.log('Connected to MongoDB'))
     .catch((err) => {
         console.error('Error connecting to MongoDB:', err.message);
         process.exit(1);
@@ -37,12 +38,9 @@ mongoose.connect(config.url, { useNewUrlParser: true, useUnifiedTopology: true }
 
 // Google OAuth setup ONLY for local environment
 if (process.env.NODE_ENV !== 'production') {
-    const passport = require('passport');
     const GoogleStrategy = require('passport-google-oauth20').Strategy;
-    const session = require('express-session');
-    const MongoStore = require('connect-mongo');
 
-    // 4. Session middleware (required for Passport)
+    // Session middleware (required for Passport)
     app.use(session({
         secret: process.env.SESSION_SECRET || 'your-secret-key',
         resave: false,
@@ -55,11 +53,11 @@ if (process.env.NODE_ENV !== 'production') {
         store: MongoStore.create({ mongoUrl: config.url })
     }));
 
-    // 5. Passport.js middleware
+    // Passport.js middleware
     app.use(passport.initialize());
     app.use(passport.session());
 
-    // 6. Google OAuth strategy
+    // Google OAuth strategy
     passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -101,7 +99,7 @@ app.get('/failure', (req, res) => {
     res.send('Failed to authenticate.');
 });
 
-// 9. Protected route example
+// Protected route example
 app.get('/dashboard', (req, res) => {
     if (req.isAuthenticated()) {
         res.send(`Hello, ${req.user.displayName || 'User'}`);
@@ -117,7 +115,7 @@ app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/dancers', dancerRoutes);
 app.use('/danceclasses', danceClassRoutes);
 
-// 12. Root route for home page
+// Root route for home page
 app.get('/', (req, res) => {
     console.log('Home page accessed');
     res.send('Welcome to the CSE341 Project 2 Home Page');
