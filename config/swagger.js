@@ -1,5 +1,5 @@
 const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
+const swaggerUi = require('swagger-ui-express'); // Add this line
 const port = process.env.PORT || 8080;
 const host = process.env.NODE_ENV === 'production' ? 'https://cse341project2-s13i.onrender.com/graphql' : `http://localhost:${port}/graphql`;
 
@@ -112,4 +112,11 @@ mutation {
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
+<<<<<<< HEAD
 module.exports = { swaggerUi, swaggerDocs };
+=======
+module.exports = { swaggerUi, swaggerDocs }; // Ensure swaggerUi is defined correctly
+
+
+
+>>>>>>> parent of 929c68c (Week07 code working correctly)
