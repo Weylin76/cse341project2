@@ -114,6 +114,3 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 module.exports = { swaggerUi, swaggerDocs };
 
-
-
->>>>>>> parent of 929c68c (Week07 code working correctly)
