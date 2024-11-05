@@ -112,10 +112,7 @@ mutation {
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
-<<<<<<< HEAD
 module.exports = { swaggerUi, swaggerDocs };
-=======
-module.exports = { swaggerUi, swaggerDocs }; // Ensure swaggerUi is defined correctly
 
 
 
